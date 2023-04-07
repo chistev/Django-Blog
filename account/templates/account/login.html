@@ -1,0 +1,28 @@
+{% extends 'article/base.html' %}
+
+{% load static %}
+
+{% block title %} login {% endblock %}
+
+{% block css %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
+
+
+{% block body %}
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+      <div class="register">
+            <p>forgot password? <a href="">Recover</a></p>
+            <p>Don't have an account? <a href="{% url 'account:register' %}">Register</a></p>
+          </div>
+</div>
+{% endblock %}

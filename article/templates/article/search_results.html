@@ -1,0 +1,32 @@
+{% extends 'article/base.html' %}
+
+{% load static %}
+
+{% block title %} {{post.title}} {% endblock %}
+
+
+{% block css %}
+        {{ block.super }}
+    <link rel="stylesheet" href="{% static 'search_results.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<h1>Search results for "{{ query }}"</h1>
+
+{% if posts %}
+<ul class="search-results">
+    {% for post in posts %}
+    <li>
+        <h2><a href="{% url 'article:detail' slug=post.slug %}">{{ post.title }}</a></h2>
+        <hr>
+        <p>{{ post.post|truncatewords:50 }}</p>
+        <hr>
+    </li>   
+    {% endfor %}
+</ul> 
+{% else %}
+    <p>No such article exists.</p>
+{% endif %}
+
+{% endblock %}

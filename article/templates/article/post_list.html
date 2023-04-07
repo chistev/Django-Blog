@@ -1,0 +1,105 @@
+{% extends 'article/base.html' %}
+
+{% block body %}
+    <!--Picture background-->
+
+    <div id="image-background">
+        <h1 id="image-background-title">Chistev</h1>
+        <p id="image-background-description">A place of my own creation where i can pen down my thoughts</p>
+    </div>
+
+    <!-- Search box -->
+    <form method="GET" action="{% url 'article:search_results' %}">
+        <div class="search-container">
+            <input type="search" name="q" placeholder="Search for an article...">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+
+
+
+
+      <!-- Card-->
+
+      <div id="card-container">
+        {% for post in page_obj %}
+        <div class="card">
+            <img src="{{ post.image.url }}" alt="Image">
+            <div class="card-content">
+                <div class="card-top">
+                    <h2><a href="{% url 'article:detail' slug=post.slug %}">{{post.title}}</a></h2>
+                    <span id="category"><a href="{% url 'article:category' post.category %}">{{post.category}}</a></span>
+                </div>
+              <p>{{post.snippet}}</p>
+              <div class="card-meta">
+                <span class="timestamp">{{post.date}}</span>
+                {% if user.is_authenticated %}
+                  {% if user in post.likes.all %}
+                  <button class="like-button" data-href="{{ post.get_api_like_url }}">
+                    <i class="fas fa-heart liked" ></i>
+                    <span class="like-count" style="color: salmon;">{{ post.likes.count }} likes</span>
+                  </button>
+                  {% else %}
+                  <button class="like-button" data-href="{{ post.get_api_like_url }}">
+                    <i class="fas fa-heart" ></i>
+                    <span class="like-count">{{ post.likes.count }} likes</span>
+                  </button>
+                  {% endif %}
+                {% else %}
+                  <button class="logged-out-like-button">
+                    <a href="{% url 'account:login' %}">{{ post.likes.count }} likes</a>
+                  </button>
+                {% endif %}
+                <!--<button class="like-button" data-href='{{ post.get_api_like_url }}'>
+                    <i class="fas fa-heart" ></i><span>{{ post.likes.count }} likes</span></button>
+                <button class="comment-button"><i class="fa-solid fa-comment"></i>5 comments</button>-->
+                  <!--<a class="like-button" data-href='{{ post.get_api_like_url }}' data-likes='{{ post.likes.count }}' href="{{ post.get_like_url }}">{{ post.likes.count }} Unlike</a>-->
+              </div>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+
+        
+      <!--Pagination-->
+    {% if page_obj.has_other_pages %}
+      <div class="pagination">
+          {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="prev">&laquo;</a>
+            {% endif %}
+
+          {% if page_obj.number > 2 %}
+                <span class="prev" style="color:forestgreen; padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; margin: 0 5px; font-weight: bold;">...</span>
+            {% endif %}
+
+          {% for i in page_obj.paginator.page_range %}
+                {% if i == page_obj.number %}
+                    <span style="color:forestgreen; padding: 8px 16px; border: 1px solid salmon; border-radius: 50%; margin: 0 5px; font-weight: bold;">{{ i }}</span>
+           {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <a class="page" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="next">&raquo;</a>
+          {% endif %}
+      </div>
+    {% endif %}
+
+<script>
+   $('.like-button').click(function(){
+    var button = $(this)
+    var postId = button.data('post-id')
+    $.ajax({
+      url: '/like_post/' + postId + '/',
+      type: 'POST',
+      data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+      success: function(response){
+        button.children('.like-count').text(response.like_count)
+        button.children('i.fa-heart').toggleClass('liked')
+      }
+    })
+   })
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'article/base.html' %}
+
+{% block body %}
+    <!--Picture background-->
+
+    <div id="image-background">
+        <h1 id="image-background-title">Chistev</h1>
+        <p id="image-background-description">A place of my own creation where i can pen down my thoughts</p>
+    </div>
+
+    <!-- Search box -->
+    <form method="GET" action="{% url 'article:search_results' %}">
+        <div class="search-container">
+            <input type="search" name="q" placeholder="Search for an article...">
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+
+
+
+
+      <!-- Card-->
+
+      <div id="card-container">
+        {% for post in page_obj %}
+        <div class="card">
+            <img src="https://th.bing.com/th/id/R.bcda51fb80d8311097104a5fac0ccb5f?rik=pV0JQy93ny1ITg&pid=ImgRaw&r=0" alt="Image">
+            <div class="card-content">
+                <div class="card-top">
+                    <h2><a href="{% url 'article:detail' slug=post.slug %}">{{post.title}}</a></h2> <span id="category"><a href="read.html">{{post.category}}</a></span>
+                </div>
+              <p>{{post.post}}</p>
+              <div class="card-meta">
+                <span class="timestamp">{{post.date}}</span>
+                <button class="like-button"><i class="fas fa-heart"></i>5 Likes</button>
+                <button class="comment-button"><i class="fa-solid fa-comment"></i>5 comments</button>
+              </div>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+
+        
+      <!--Pagination-->
+
+      <div class="pagination">
+          {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        <a href="#" class="prev">&laquo;</a>
+        <a href="#" class="page">1</a>
+        <a href="#" class="page">2</a>
+        <a href="#" class="page">3</a>
+        <a href="#" class="next">&raquo;</a>
+          {% endif %}
+      </div>
+{% endblock %}
