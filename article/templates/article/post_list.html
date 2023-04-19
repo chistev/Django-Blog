@@ -16,12 +16,7 @@
         </div>
     </form>
 
-
-
-
-
       <!-- Card-->
-
       <div id="card-container">
         {% for post in page_obj %}
         <div class="card">
@@ -46,15 +41,23 @@
                     <span class="like-count">{{ post.likes.count }} likes</span>
                   </button>
                   {% endif %}
+                  <button id="comment-button" class="comment-button"><a 
+                    href="{% url 'article:detail' slug=post.slug %}?comment=true#comment-textarea" 
+                    style="text-decoration: none;" class="comment-button">
+                    <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                  </a>
+                    </button>
                 {% else %}
                   <button class="logged-out-like-button">
                     <a href="{% url 'account:login' %}">{{ post.likes.count }} likes</a>
                   </button>
+                  <button id="comment-button" class="comment-button"><a 
+                    href="{% url 'article:detail' slug=post.slug %}#sort" style="text-decoration: none;" class="comment-button">
+                    <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                  </a>
+                    </button>
                 {% endif %}
-                <!--<button class="like-button" data-href='{{ post.get_api_like_url }}'>
-                    <i class="fas fa-heart" ></i><span>{{ post.likes.count }} likes</span></button>
-                <button class="comment-button"><i class="fa-solid fa-comment"></i>5 comments</button>-->
-                  <!--<a class="like-button" data-href='{{ post.get_api_like_url }}' data-likes='{{ post.likes.count }}' href="{{ post.get_like_url }}">{{ post.likes.count }} Unlike</a>-->
+                
               </div>
             </div>
         </div>
@@ -87,19 +90,5 @@
       </div>
     {% endif %}
 
-<script>
-   $('.like-button').click(function(){
-    var button = $(this)
-    var postId = button.data('post-id')
-    $.ajax({
-      url: '/like_post/' + postId + '/',
-      type: 'POST',
-      data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
-      success: function(response){
-        button.children('.like-count').text(response.like_count)
-        button.children('i.fa-heart').toggleClass('liked')
-      }
-    })
-   })
-</script>
+    
 {% endblock %}

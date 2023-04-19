@@ -1,3 +1,5 @@
+// Like and unlike functionality
+
 $('.like-button').click(function(e){
     e.preventDefault()
     var this_ = $(this)

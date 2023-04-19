@@ -50,15 +50,10 @@ class PostLikeAPIToggle(APIView):
         return Response(data)
 
 
-'''def index(request):
-    posts = Post.objects.all()
-    context = {'posts': posts}
-    return render(request, 'article/index.html', context)'''
-
-
 def detail(request, slug):
     # the slug from the models.py is = to the slug passed in via the url request
     post = Post.objects.get(slug=slug)
+
     context = {'post': post}
     return render(request, 'article/read.html', context)
 
