@@ -160,6 +160,10 @@ li{
   transform: translateY(-5px);
 }
 
+.image-container{
+  height: 20px;
+}
+
   .card img {
     border-radius: 4px 4px 0 0;
     width: 100%;

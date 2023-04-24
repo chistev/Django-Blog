@@ -2,7 +2,7 @@
 
 #image-background{
     margin-top: 10px;
-    background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7)), url(https://th.bing.com/th/id/R.bcda51fb80d8311097104a5fac0ccb5f?rik=pV0JQy93ny1ITg&pid=ImgRaw&r=0);
+    /* background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7)), url(https://th.bing.com/th/id/R.bcda51fb80d8311097104a5fac0ccb5f?rik=pV0JQy93ny1ITg&pid=ImgRaw&r=0); */
     height: 300px;
     width: 99%;
     background-size: cover;
