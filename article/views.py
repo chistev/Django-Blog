@@ -53,7 +53,20 @@ class PostLikeAPIToggle(APIView):
 def detail(request, slug):
     # the slug from the models.py is = to the slug passed in via the url request
     post = Post.objects.get(slug=slug)
-    context = {'post': post}
+
+    # to filter based on category
+    category = post.category
+    # the category in the models is = to the category value above, and we exclude the current article
+    related_articles = Post.objects.filter(category=category).exclude(id=post.id).order_by('-date')[:5]
+    if related_articles.count() < 5:
+        show_all = False
+    else:
+        show_all = True
+    context = {'post': post,
+               'related_articles': related_articles,
+               'show_all': show_all
+               }
+    print(category.slug)
     return render(request, 'article/read.html', context)
 
 
@@ -70,7 +83,13 @@ def search_results(request):
 def category_view(request, categories):
     category = get_object_or_404(Category, name__exact=categories)
     posts = category.posts.all()
+
+    #category_slugs = categories.split(',')
+    #categories = Category.objects.filter(slug__in=category_slugs)
+    #articles = Post.objects.filter(category__in=categories)
     context = {'category': category,
-               'posts': posts
+               'posts': posts,
+               #'category_names': [category.name for category in categories],
+               #'articles': articles,
                }
     return render(request, 'article/category.html', context)

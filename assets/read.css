@@ -186,6 +186,10 @@ h2{
   #card li:last-child {
     border-bottom: none;
   }
+
+  #card li a:hover{
+    color: blue;
+  }
   
   #card a {
     color: #333;
@@ -201,6 +205,11 @@ h2{
     font-size: 1rem;
     padding: 10px 20px;
     margin-top: 20px;
+  }
+
+  #card #view-related-articles{
+    background-color: #007bff;
+    color: red;
   }
 
   #card button:hover {
