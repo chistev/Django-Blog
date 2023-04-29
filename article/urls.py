@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/<slug>/like/', PostLikeAPIToggle.as_view(), name='like-api'),
     path('article/search/', views.search_results, name='search_results'),
     path('category/<str:categories>/', views.category_view, name='category'),
+    path('article/<str:slug>/delete/', views.delete_post, name='delete_post'),
 ]
 

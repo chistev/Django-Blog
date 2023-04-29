@@ -32,3 +32,43 @@ $('.like-button').click(function(e){
         })
     }
 })
+
+// delete post functionality
+
+/* $(document).ready(function(){
+    $('.delete-button').click(function(){
+        console.log("it works")
+        if(confirm('Are you sure you want to delete this post?')) {
+            var post_slug = '{{ post.slug }}'
+            $.ajax({
+                url: '/article/' + post_slug + '/delete/',
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(){
+                    window.location.href = '/'
+                }
+            })
+        }
+})
+}) */
+
+$(document).ready(function(){
+    $('#delete-post-form').submit(function(event){
+        event.preventDefault()
+        
+        var formData = $(this).serialize()
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function(){
+                window.location.href = '/'
+            }
+        })
+    })
+})

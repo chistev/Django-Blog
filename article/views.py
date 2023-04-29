@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
 
@@ -51,6 +51,7 @@ class PostLikeAPIToggle(APIView):
 
 
 def detail(request, slug):
+    user_authenticated = request.user.is_authenticated
     # the slug from the models.py is = to the slug passed in via the url request
     post = Post.objects.get(slug=slug)
 
@@ -62,12 +63,26 @@ def detail(request, slug):
         show_all = False
     else:
         show_all = True
-    context = {'post': post,
-               'related_articles': related_articles,
-               'show_all': show_all
+    context = {
+                'user_authenticated': user_authenticated,
+                'post': post,
+                'related_articles': related_articles,
+                'show_all': show_all,
                }
     print(category.slug)
-    return render(request, 'article/read.html', context)
+    return render(request, 'article/read.html', context=context)
+
+
+@login_required
+# deleting posts
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    if not request.user.is_superuser:
+        # if the user is not an admin they cannot delete
+        return HttpResponseForbidden()
+    if request.method == 'POST':
+        post.delete()
+    return redirect('article:index')
 
 
 def search_results(request):
