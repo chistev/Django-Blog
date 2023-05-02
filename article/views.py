@@ -42,10 +42,12 @@ class PostLikeAPIToggle(APIView):
                 obj.likes.add(user)
             updated = True
             counts = obj.likes.count()
+            count_str = "likes" if counts != 1 else "like"  # define count_str variable
         data = {
             'updated': updated,
             'liked': liked,
-            'likes_count': counts
+            'likes_count': counts,
+            'count_str': count_str
         }
         return Response(data)
 

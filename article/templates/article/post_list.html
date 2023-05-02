@@ -33,12 +33,12 @@
                   {% if user in post.likes.all %}
                   <button class="like-button" data-href="{{ post.get_api_like_url }}">
                     <i class="fas fa-heart liked" ></i>
-                    <span class="like-count" style="color: salmon;">{{ post.likes.count }} likes</span>
+                    <span class="like-count" style="color: salmon;">{{ post.likes.count }} {{ count_str }}</span>
                   </button>
                   {% else %}
                   <button class="like-button" data-href="{{ post.get_api_like_url }}">
                     <i class="fas fa-heart" ></i>
-                    <span class="like-count">{{ post.likes.count }} likes</span>
+                    <span class="like-count">{{ post.likes.count }} {{ count_str }}</span>
                   </button>
                   {% endif %}
                   <button id="comment-button" class="comment-button"><a 
@@ -49,7 +49,7 @@
                     </button>
                 {% else %}
                   <button class="logged-out-like-button">
-                    <a href="{% url 'account:login' %}">{{ post.likes.count }} likes</a>
+                    <a href="{% url 'account:login' %}">{{ post.likes.count }} {{ count_str }}</a>
                   </button>
                   <button id="comment-button" class="comment-button"><a 
                     href="{% url 'article:detail' slug=post.slug %}#sort" style="text-decoration: none;" class="comment-button">
