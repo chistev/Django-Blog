@@ -102,8 +102,12 @@
   margin: 10px 0;
 }
 
-.like-button:hover, .comment-button:hover, .delete-button:hover, .edit-button:hover {
+.like-button:hover, .comment-button:hover, .edit-button a:hover{
 color: salmon;
+}
+
+.delete-button:hover{
+  color: red;
 }
 
 

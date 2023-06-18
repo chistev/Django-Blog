@@ -21,6 +21,7 @@ class Category(models.Model):
 
 
 class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField()
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
@@ -28,6 +29,7 @@ class Post(models.Model):
     post = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, blank=True, related_name="post_likes")
+    is_edited = models.BooleanField(default=False)
 
     def get_api_like_url(self):
         return reverse('article:like-api', kwargs={'slug': self.slug})

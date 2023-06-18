@@ -11,5 +11,7 @@ urlpatterns = [
     path('article/search/', views.search_results, name='search_results'),
     path('category/<str:categories>/', views.category_view, name='category'),
     path('article/<str:slug>/delete/', views.delete_post, name='delete_post'),
+    path('article/edit/<str:slug>/', views.edit_post, name='edit_post'),
+    path('article/save/<str:slug>/', views.save_post, name='save_post'),
 ]
 

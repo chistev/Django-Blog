@@ -1,0 +1,44 @@
+{% extends 'article/base.html' %}
+
+{% load static %}
+
+{% block title %} {{post.title}} {% endblock %}
+
+{% block css %}
+        {{ block.super }}
+    <link rel="stylesheet" href="{% static 'edit_post.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+  <div class="form-container">
+    <form method="POST" action="{% url 'article:save_post' slug=post.slug %}">
+      {% csrf_token %}
+  
+      <!-- Article details section -->
+      <div class="article-details">
+        <h1>{{ post.title }}</h1>
+        <hr>
+        <p>{{ post.post }}</p>
+      </div>
+  
+      <!-- Edit form section -->
+      <div class="edit-form">
+        <div class="form-group">
+          <label for="new_content">New Content:</label>
+          <div class="textarea-container">
+            <textarea id="new_content" name="new_content" class="form-control">{{ post.post }}</textarea>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+</div>
+
+{% endblock %}

@@ -87,6 +87,39 @@ def delete_post(request, slug):
     return redirect('article:index')
 
 
+def edit_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    # Check if the current user is the author of the article
+    if post.user != request.user:
+        # You can customize the error message or redirect to another page
+        return HttpResponse("You are not allowed to edit this article.")
+
+    return render(request, 'article/edit_post.html', {'post': post})
+
+
+def save_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Check if the current user is the author of the article
+    if post.user != request.user:
+        return HttpResponse("You are not allowed to edit this article.")
+
+    if request.method == 'POST':
+        new_content = request.POST.get('new_content')
+
+        # Update the article content
+        post.post = new_content
+
+        # Set the edited flag
+        post.is_edited = True
+
+        # Save the changes
+        post.save()
+
+        # Redirect to the article details page or any other page
+        return redirect('article:detail', slug=post.slug)
+
+
 def search_results(request):
     query = request.GET.get('q')
     posts = Post.objects.filter(Q(title__icontains=query) | Q(post__icontains=query))

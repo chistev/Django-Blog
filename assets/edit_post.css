@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust this value if needed */
+  }
+
+  .form-container {
+    max-width: 400px;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+  }
+
+.article-details h1,
+.article-details p,
+.form-group {
+  margin-bottom: 10px;
+}
+
+.textarea-container {
+    margin-bottom: 20px;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .article-details p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  .textarea-container textarea {
+    height: 200px; /* Adjust the height as needed */
+    width: 350px;
+  }
+  
