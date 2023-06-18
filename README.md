@@ -1,9 +1,9 @@
 This is a blog built with the Django Framework. 
 
 in the settings.py, add
-
-    'account',
+    
     'article',
+    'account',
     'rest_framework'
 
     to installed apps.
