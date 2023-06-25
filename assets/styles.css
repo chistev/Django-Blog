@@ -140,14 +140,6 @@ button[type=submit]:hover {
 
 /* Cards */
 
-/* #card-container{
-  display: flex;
-  flex-wrap:wrap;
-  align-items: center;
-  justify-content: center;
-}
- */
-
  #card-container {
   display: flex;
   flex-wrap: wrap;
@@ -167,18 +159,6 @@ button[type=submit]:hover {
   word-wrap: break-word;
 }
 
-
- /* .card {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 350px;
-  width: 100%; /* Added width */
-  margin: 20px;
-  transition: transform 0.3s ease;
-  word-wrap: break-word;
-} */
-
 .card:hover {
 transform: translateY(-5px);
 }
@@ -188,13 +168,6 @@ transform: translateY(-5px);
   width: 100%;
   height: 300px;
 }
-
- /* .card img {
-  border-radius: 4px 4px 0 0;
-  width: 100%;
-  height: 200px; /* Set a fixed height for the image
-  object-fit: cover; /* Added object-fit property 
-} */
 
 .card-content {
   padding: 10px;

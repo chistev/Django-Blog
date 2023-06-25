@@ -40,12 +40,12 @@
                                 {% if user.is_authenticated %}
                                   {% if user in post.likes.all %}
                                   <button class="like-button" data-href="{{ post.get_api_like_url }}">
-                                    <i class="fas fa-heart liked" ></i>
+                                    <i class="fas fa-heart liked article-like-style" ></i>
                                     <span class="like-count" style="color: salmon;">{{ post.likes.count }} {{ count_str }}</span>
                                   </button>
                                   {% else %}
                                   <button class="like-button" data-href="{{ post.get_api_like_url }}">
-                                    <i class="fas fa-heart" ></i>
+                                    <i class="fas fa-heart article-like-style" ></i>
                                     <span class="like-count">{{ post.likes.count }} {{ count_str }}</span>
                                   </button>
                                  {% endif %}
@@ -85,14 +85,26 @@
                                 
                               {% endif %}
                                 
-                                <!-- <button class="edit-button"><i class="fa-solid fa-pen-to-square"></i>Edit</button> -->
+                        
                             </div>
                         </div>
                           <hr>
 
                       <p>{{post.post}}</p>
                       <div>
-                        <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+                        {% if user.is_authenticated %}
+                                  {% if user in post.likes.all %}
+                                  <button class="like-button" data-href="{{ post.get_api_like_url }}">
+                                    <i class="fas fa-heart liked article-like-style" ></i>
+                                    <span class="like-count" style="color: salmon;">{{ post.likes.count }} {{ count_str }}</span>
+                                  </button>
+                                  {% else %}
+                                  <button class="like-button" data-href="{{ post.get_api_like_url }}">
+                                    <i class="fas fa-heart article-like-style" ></i>
+                                    <span class="like-count">{{ post.likes.count }} {{ count_str }}</span>
+                                  </button>
+                                 {% endif %}
+                        {% endif %}
                         <button class="comment-button"><i class="fa-solid fa-comment"></i>Leave a comment</button>
                       </div>
                     </div>

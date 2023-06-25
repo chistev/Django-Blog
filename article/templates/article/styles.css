@@ -147,14 +147,14 @@ li{
     justify-content: center;
   }
 
-  .card {
-    border: 1px solid #ddd;
+ .card {
+    border: 10px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     max-width: 350px;
     margin: 20px;
     transition: transform 0.3s ease;
-}
+    }
 
 .card:hover {
   transform: translateY(-5px);
