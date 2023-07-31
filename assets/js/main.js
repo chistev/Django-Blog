@@ -108,28 +108,55 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // Function to render a new comment on the page
-function renderComment(commentData) {
-  var commentHtml = `
-  <div class="comment">
-    <div class="comment-header">
-      <h3>${commentData.user}</h3>
-      <span class="timestamp">${commentData.date_posted}</span>
-    </div>
-    <div class="comment-body">
-      <p>${commentData.comment}</p>
-    </div>
-    <div class="comment-footer">
-      <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
-      <button class="like-button"><i class="fas fa-heart"></i>Like</button>
-      <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
-    </div>
-    <div class="child-comments">
-      <!-- Child comments go here (if any) -->
-    </div>
-  </div>`;
+  function renderComment(commentData) {
+    var commentHtml = `
+      <div class="comment">
+        <div class="comment-header">
+          <h3>${commentData.user}</h3>
+          <span class="timestamp">${commentData.date_posted}</span>
+        </div>
+        <div class="comment-body">
+          <p>${commentData.comment}</p>
+        </div>
+        <div class="comment-footer">
+          <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
+          <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+          <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
+        </div>
+        <hr>
+        <div class="child-comments">
+          <!-- Child comments go here (if any) -->
+        </div>
+      </div>`;
 
-  document.getElementById("comments-section").insertAdjacentHTML("afterbegin", commentHtml);
-}
+    document.getElementById("comments-section").insertAdjacentHTML("afterbegin", commentHtml);
+  }
+
+  // Function to fetch comments from the server and render them on the page
+  function fetchAndRenderComments() {
+    var slug = document.getElementById("comment-form").getAttribute("data-slug");
+    var commentListURL = `/comments/${slug}/`;
+
+    fetch(commentListURL)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Render the comments on the page
+        data.forEach(commentData => {
+          renderComment(commentData);
+        });
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  }
+
+  // Fetch and render comments when the page loads
+  fetchAndRenderComments();
 
   // Function to get CSRF token from cookies
   function getCookie(name) {

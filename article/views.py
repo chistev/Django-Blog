@@ -166,3 +166,20 @@ def comment_submit(request, slug):
         return JsonResponse(comment_data)
     return JsonResponse({'error': 'Invalid request method'})
 
+# This view is to fetch the comment after a page reload
+
+
+def get_comments(request, slug):
+    post = Post.objects.get(slug=slug)
+    comments = Comment.objects.filter(post=post)
+
+    comment_list = []
+    for comment in comments:
+        comment_data = {
+            'user': comment.user.username,
+            'date_posted': comment.date_posted.strftime('%Y-%m-%d %H:%M:%S'),
+            'comment': comment.comment,
+        }
+        comment_list.append(comment_data)
+
+    return JsonResponse(comment_list, safe=False)
