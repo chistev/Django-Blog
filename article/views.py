@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
+from django.views.decorators.http import require_POST
+from requests import post
 
-from .models import Post, Category
+from .models import Post, Category, Comment
 from django.shortcuts import render, redirect
 
 from django.db.models import Q
@@ -71,7 +73,6 @@ def detail(request, slug):
                 'related_articles': related_articles,
                 'show_all': show_all,
                }
-    print(category.slug)
     return render(request, 'article/read.html', context=context)
 
 
@@ -143,3 +144,25 @@ def category_view(request, categories):
                #'articles': articles,
                }
     return render(request, 'article/category.html', context)
+
+# comment functionality
+
+
+@require_POST
+@login_required
+def comment_submit(request, slug):
+    if request.method == 'POST':
+        # Get the comment data from the request and save it to the database
+        comment_text = request.POST.get('comment')
+        # Assuming you have already authenticated the user
+        user = request.user
+        post = get_object_or_404(Post, slug=slug)
+        comment = Comment.objects.create(post=post, user=user, comment=comment_text)
+        comment_data = {
+            'user': comment.user.username,
+            'date_posted': comment.date_posted.strftime('%Y-%m-%d %H:%M:%S'),
+            'comment': comment.comment,
+        }
+        return JsonResponse(comment_data)
+    return JsonResponse({'error': 'Invalid request method'})
+

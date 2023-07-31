@@ -68,3 +68,82 @@ $(document).ready(function(){
       })
   })
 })
+
+// Adding comment functionality
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Function to submit the comment form using Fetch API
+  document.getElementById("comment-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    var commentText = document.getElementById("comment-textarea").value.trim();
+    if (commentText !== "") {
+      var formData = new FormData(this);
+      var slug = this.getAttribute("data-slug");
+      var commentSubmitURL = `/comment_submit/${slug}/`;
+
+      fetch(commentSubmitURL, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Clear the comment textarea after successful submission
+        document.getElementById("comment-textarea").value = "";
+        // Render the new comment on the page
+        renderComment(data);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }
+  });
+
+  // Function to render a new comment on the page
+function renderComment(commentData) {
+  var commentHtml = `
+  <div class="comment">
+    <div class="comment-header">
+      <h3>${commentData.user}</h3>
+      <span class="timestamp">${commentData.date_posted}</span>
+    </div>
+    <div class="comment-body">
+      <p>${commentData.comment}</p>
+    </div>
+    <div class="comment-footer">
+      <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
+      <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+      <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
+    </div>
+    <div class="child-comments">
+      <!-- Child comments go here (if any) -->
+    </div>
+  </div>`;
+
+  document.getElementById("comments-section").insertAdjacentHTML("afterbegin", commentHtml);
+}
+
+  // Function to get CSRF token from cookies
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});

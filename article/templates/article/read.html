@@ -130,59 +130,17 @@
                     </div>
                     
                     <div id="comment-container" class="comment-container" style="display: none;">
-                      <form id="comment-form" method="post" action="">
+                      <form id="comment-form" method="post" action="{% url 'article:comment_submit' post.slug %}" data-slug="{{ post.slug }}">
                         {% csrf_token %}
                         <textarea id="comment-textarea"
-                        style="font-size: 16px; color: #333; background-color: #f2f2f2; border: 1px solid #ccc; 
-                        border-radius: 4px; padding: 8px; outline: none; text-align:left;" name="comment" rows="4" cols="50">
+                                  style="font-size: 16px; color: #333; background-color: #f2f2f2; border: 1px solid #ccc; 
+                                  border-radius: 4px; padding: 8px; outline: none; text-align: left;" name="comment" rows="4" cols="50">
                         </textarea>
-                        <button id="submit-comment" style="display: block;"type="submit">Submit</button>
+                        <button id="submit-comment" style="display: block;" type="submit">Submit</button>
                       </form>
                     </div>
-
-                    <div class="comment">
-                      <div class="comment-header">
-                        <h3>User 1</h3>
-                        <span class="timestamp">2 hours ago</span>
-                      </div>
-                      <div class="comment-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                      </div>
-                      <div class="comment-footer">
-                        <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
-                        <button class="like-button"><i class="fas fa-heart"></i>Like</button>
-                        <button class="like-button"><i class="fa-solid fa-trash"></i>delete</button>
-                      </div>
-                      <div class="child-comments">
-                        <div class="comment">
-                          <div class="comment-header">
-                            <h3>User 2</h3>
-                            <span class="timestamp">1 hour ago</span>
-                          </div>
-                          <div class="comment-body">
-                            <p>Reply to User 1
-                                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque sequi assumenda velit itaque et! Amet, tempore. Tenetur voluptatum ex natus unde perferendis officiis. Praesentium aspernatur vitae consequuntur cumque, amet debitis?
-                            </p>
-                          </div>
-                          <div class="comment-footer">
-                            <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
-                        <button class="like-button"><i class="fas fa-heart"></i>Like</button>
-                        <button class="like-button"><i class="fa-solid fa-trash"></i>delete</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="comment">
-                      <div class="comment-header">
-                        <h3>User 3</h3>
-                        <span>3 hours ago</span>
-                      </div>
-                      <div class="comment-body">
-                        <p>Nullam fringilla risus ac dui tristique, a eleifend eros suscipit.</p>
-                      </div>
-                      <div class="comment-footer">
-                        <a href="#">Reply</a>
-                      </div>
+    
+                    <div id="comments-section">
                     </div>
                   </div>
         </div>
@@ -259,5 +217,7 @@
           }
         })
       })
+
+      /* const commentSubmitURL = "{% url 'article:comment_submit' post.slug %}" */
     </script>
 {% endblock %}
