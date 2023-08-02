@@ -54,7 +54,7 @@ class PostLikeAPIToggle(APIView):
         return Response(data)
 
 
-def detail(request, slug):
+'''def detail(request, slug):
     user_authenticated = request.user.is_authenticated
     # the slug from the models.py is = to the slug passed in via the url request
     post = Post.objects.get(slug=slug)
@@ -67,14 +67,78 @@ def detail(request, slug):
         show_all = False
     else:
         show_all = True
+
     context = {
                 'user_authenticated': user_authenticated,
                 'post': post,
                 'related_articles': related_articles,
                 'show_all': show_all,
                }
+    return render(request, 'article/read.html', context=context)'''
+
+def detail(request, slug):
+    user_authenticated = request.user.is_authenticated
+    post = get_object_or_404(Post, slug=slug)
+
+    # to filter based on category
+    category = post.category
+    # the category in the models is = to the category value above, and we exclude the current article
+    related_articles = Post.objects.filter(category=category).exclude(id=post.id).order_by('-date')[:5]
+    if related_articles.count() < 5:
+        show_all = False
+    else:
+        show_all = True
+
+    # Load comments for the post
+    comments = post.comments.order_by('-date_posted')
+    batch_size = 10  # Set the number of comments to load per batch
+    total_comments = comments.count()
+
+    # Get the 'offset' parameter from the request's query string
+    offset = int(request.GET.get('offset', 0))
+
+    # Check if there are more comments to load
+    if total_comments > batch_size + offset:
+        show_load_more = True
+        comments = comments[offset: offset + batch_size]
+    else:
+        show_load_more = False
+        comments = comments[offset:]
+
+    context = {
+        'user_authenticated': user_authenticated,
+        'post': post,
+        'related_articles': related_articles,
+        'show_all': show_all,
+        'comments': enumerate(comments),
+        'show_load_more': show_load_more,
+        'batch_size': batch_size,
+        'total_comments': total_comments,
+    }
+
     return render(request, 'article/read.html', context=context)
 
+def load_more_comments(request, slug, offset):
+    post = get_object_or_404(Post, slug=slug)
+    comments = post.comments.order_by('-date_posted')
+    batch_size = 10
+
+    offset = int(offset)  # Convert the offset to an integer
+
+    if offset > 0:
+        comments = comments[offset:offset + batch_size]
+    else:
+        comments = comments[:batch_size]
+
+    data = []
+    for comment in comments:
+        data.append({
+            'user': comment.user.username,
+            'date_posted': comment.date_posted.strftime('%Y-%m-%d %H:%M:%S'),
+            'comment': comment.comment,
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required
 # deleting posts

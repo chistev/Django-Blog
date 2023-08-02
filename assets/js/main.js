@@ -71,41 +71,50 @@ $(document).ready(function(){
 
 // Adding comment functionality
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Function to submit the comment form using Fetch API
-  document.getElementById("comment-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the default form submission
+document.addEventListener("DOMContentLoaded", function () {
+  var batch_size = 10; // Set the batch size here
+  var totalComments = 0;
+  var displayedComments = 0;
 
-    var commentText = document.getElementById("comment-textarea").value.trim();
-    if (commentText !== "") {
-      var formData = new FormData(this);
-      var slug = this.getAttribute("data-slug");
-      var commentSubmitURL = `/comment_submit/${slug}/`;
+  // Function to load more comments
+  function loadMoreComments() {
+    var offset = displayedComments;
+    var slug = document.getElementById("comment-form").getAttribute("data-slug");
+    var loadMoreURL = `/load_more_comments/${slug}/${offset}/`;
 
-      fetch(commentSubmitURL, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-      })
-      .then(response => {
+    fetch(loadMoreURL)
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok.');
+          throw new Error("Network response was not ok.");
         }
         return response.json();
       })
-      .then(data => {
-        // Clear the comment textarea after successful submission
-        document.getElementById("comment-textarea").value = "";
-        // Render the new comment on the page
-        renderComment(data);
+      .then((data) => {
+        if (data.length > 0) {
+          // Render the new comments on the page
+          data.forEach((commentData) => {
+            renderComment(commentData);
+          });
+          // Update the 'offset' attribute of the "Load more comments" button
+          displayedComments += data.length;
+          // Hide the "Load more comments" button if no more comments to load
+          if (displayedComments >= totalComments) {
+            document.getElementById("load-more-button").style.display = "none";
+          }
+        } else {
+          // Hide the "Load more comments" button if no more comments to load
+          document.getElementById("load-more-button").style.display = "none";
+        }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
-    }
-  });
+  }
+
+  // Show only the first batch of comments
+  displayedComments = batch_size;
+  console.log("Total comments:", totalComments);
+  console.log("Batch size:", batch_size);
 
   // Function to render a new comment on the page
   function renderComment(commentData) {
@@ -129,7 +138,9 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
       </div>`;
 
-    document.getElementById("comments-section").insertAdjacentHTML("afterbegin", commentHtml);
+    document
+      .getElementById("comments-section")
+      .insertAdjacentHTML("afterbegin", commentHtml);
   }
 
   // Function to fetch comments from the server and render them on the page
@@ -138,25 +149,74 @@ document.addEventListener("DOMContentLoaded", function() {
     var commentListURL = `/comments/${slug}/`;
 
     fetch(commentListURL)
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok.');
+          throw new Error("Network response was not ok.");
         }
         return response.json();
       })
-      .then(data => {
-        // Render the comments on the page
-        data.forEach(commentData => {
-          renderComment(commentData);
-        });
+      .then((data) => {
+        console.log("Fetched comments:", data);
+        // Update the total number of comments
+        totalComments = data.length;
+        console.log("Total comments:", totalComments);
+        // Hide the "Load more comments" button if no more comments to load
+        if (totalComments <= displayedComments) {
+          document.getElementById("load-more-button").style.display = "none";
+        } else {
+          document.getElementById("load-more-button").style.display = "block";
+        }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   }
 
   // Fetch and render comments when the page loads
   fetchAndRenderComments();
+
+  // Fetch and render more comments when the "Load more comments" button is clicked
+  document.getElementById("load-more-button").addEventListener("click", function () {
+    loadMoreComments();
+  });
+
+  // Function to submit the comment form using Fetch API
+  document
+    .getElementById("comment-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      var commentText = document.getElementById("comment-textarea").value.trim();
+      if (commentText !== "") {
+        var formData = new FormData(this);
+        var slug = this.getAttribute("data-slug");
+        var commentSubmitURL = `/comment_submit/${slug}/`;
+
+        fetch(commentSubmitURL, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Clear the comment textarea after successful submission
+            document.getElementById("comment-textarea").value = "";
+            // Render the new comment on the page
+            renderComment(data);
+            displayedComments += 1;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    });
 
   // Function to get CSRF token from cookies
   function getCookie(name) {
@@ -165,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var cookies = document.cookie.split(";");
       for (var i = 0; i < cookies.length; i++) {
         var cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        if (cookie.substring(0, name.length + 1) === name + "=") {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
         }

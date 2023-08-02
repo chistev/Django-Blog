@@ -15,6 +15,8 @@ urlpatterns = [
     path('article/save/<str:slug>/', views.save_post, name='save_post'),
     path('comment_submit/<str:slug>/', views.comment_submit, name='comment_submit'),
     path('comments/<str:slug>/', views.get_comments, name='get_comments'),
+    path('load_more_comments/<slug:slug>/<int:offset>/', views.load_more_comments, name='load_more_comments'),
+
 ]
 
 

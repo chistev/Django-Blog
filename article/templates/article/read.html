@@ -140,8 +140,35 @@
                       </form>
                     </div>
     
-                    <div id="comments-section">
-                    </div>
+                  <div id="comments-section">
+                    {% for i, comment in comments %}
+                      <div class="comment {% if i >= batch_size %}hidden{% endif %}">
+                        <div class="comment-header">
+                          <h3>{{ comment.user }}</h3>
+                          <span class="timestamp">{{ comment.date_posted }}</span>
+                        </div>
+                        <div class="comment-body">
+                          <p>{{ comment.comment }}</p>
+                        </div>
+                        <div class="comment-footer">
+                          <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
+                          <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+                          <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
+                        </div>
+                        <hr>
+                        <div class="child-comments">
+                          <!-- Child comments go here (if any) -->
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  
+                  
+                  {% if show_load_more %}
+                    <!-- Load more comments button -->
+                    <button id="load-more-button" data-offset="{{ batch_size }}" data-show-load-more="{{ show_all|yesno:"true,false" }}">Load more comments</button>
+                  {% endif %}
+
                   </div>
         </div>
             
