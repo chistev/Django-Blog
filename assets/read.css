@@ -73,7 +73,7 @@
   color: white;
 }
 
-.like-button, .comment-button {
+.like-button, .comment-button{
   background: none;
   border: none;
   color: white;
@@ -153,6 +153,19 @@ h2{
     color:white;
   }
 
+  #submit-comment, #load-more-button{
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  #load-more-button {
+    margin-top: 10px;
+  }
 
 /* Related Articles */
 
@@ -212,22 +225,13 @@ h2{
     margin-top: 20px;
   }
 
-  #submit-comment{
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 10px 20px;
-    
-  }
+  
   #card #view-related-articles{
     background-color: #007bff;
     color: red;
   }
 
-  #card button:hover, #submit-comment:hover {
+  #card button:hover, #submit-comment:hover, #load-more-button:hover {
     background-color: #0069d9;
   }
   
