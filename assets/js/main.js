@@ -1,7 +1,7 @@
 // Like and unlike functionality
 
 // Generate the initial count string on page load
-$('.like-count').each(function() {
+/* $('.like-count').each(function() {
   var count = parseInt($(this).text());
   var count_str = count === 1 ? '1 like' : count + ' likes';
   $(this).text(count_str);
@@ -45,6 +45,72 @@ $('.like-button').click(function(e) {
       }
     });
   }
+});
+ */
+
+// Function to update like counts and pluralization
+function updateLikeCounts() {
+  document.querySelectorAll('.like-count').forEach(function (likeCount) {
+    var count = parseInt(likeCount.textContent);
+    var count_str = count === 1 ? 'like' : 'likes';
+    likeCount.textContent = count + ' ' + count_str;
+  });
+}
+
+// Function to update like button UI
+function updateLikeButtonUI(postSlug, data) {
+  // Update both detail like buttons' UI
+  document.querySelectorAll(`[data-post-slug="${postSlug}"]`).forEach(function (likeButton) {
+    var like_icon = likeButton.querySelector('.article-like-style');
+    var like_count = likeButton.querySelector('.like-count');
+
+    if (data.liked) {
+      like_icon.style.color = 'salmon';
+      like_count.textContent = data.likes_count + ' ' + data.count_str;
+      like_count.style.color = 'salmon';
+    } else {
+      like_icon.style.color = 'white';
+      like_count.textContent = data.likes_count + ' ' + data.count_str;
+      like_count.style.color = '';
+    }
+  });
+}
+
+// Update like counts and pluralization on page load
+updateLikeCounts();
+
+// Update the count string when the like buttons are clicked
+document.querySelectorAll('[data-post-slug]').forEach(function (likeButton) {
+  likeButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    var likeURL = likeButton.getAttribute('data-href');
+    var postSlug = likeButton.getAttribute('data-post-slug');
+
+    if (likeURL) {
+      fetch(likeURL, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest', // Include this header for Django to detect AJAX requests
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          console.log(data);
+
+          // Update both detail like buttons' UI
+          updateLikeButtonUI(postSlug, data);
+
+          // Update like counts on the page
+          updateLikeCounts();
+        })
+        .catch(function (error) {
+          console.error(error);
+          console.error('error');
+        });
+    }
+  });
 });
 
 
@@ -128,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
           <p>${commentData.comment}</p>
         </div>
         <div class="comment-footer">
-          <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
           <button class="like-button"><i class="fas fa-heart"></i>Like</button>
           <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
         </div>

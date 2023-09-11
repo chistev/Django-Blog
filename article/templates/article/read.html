@@ -119,7 +119,7 @@
                         <h2>Comments</h2>
                     </div>
                     <hr>
-                    <div class="sort-comments">
+                    <!-- <div class="sort-comments">
                         <label for="sort">Sort by:</label>
                         <select id="sort">
                           <option value="new">New</option>
@@ -128,7 +128,7 @@
                           <option value="old">Oldest</option>
                         </select>
                     </div>
-                    
+                     -->
                     <div id="comment-container" class="comment-container" style="display: none;">
                       <form id="comment-form" method="post" action="{% url 'article:comment_submit' post.slug %}" data-slug="{{ post.slug }}">
                         {% csrf_token %}
@@ -151,7 +151,7 @@
                           <p>{{ comment.comment }}</p>
                         </div>
                         <div class="comment-footer">
-                          <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button>
+                          <!-- <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button> -->
                           <button class="like-button"><i class="fas fa-heart"></i>Like</button>
                           <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
                         </div>
@@ -245,6 +245,6 @@
         })
       })
 
-      /* const commentSubmitURL = "{% url 'article:comment_submit' post.slug %}" */
+      
     </script>
 {% endblock %}
