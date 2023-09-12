@@ -18,6 +18,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 
+from django.http import JsonResponse
+from .models import Comment
+
 
 class PostListView(ListView):
     paginate_by = 5
@@ -54,27 +57,33 @@ class PostLikeAPIToggle(APIView):
         return Response(data)
 
 
-'''def detail(request, slug):
-    user_authenticated = request.user.is_authenticated
-    # the slug from the models.py is = to the slug passed in via the url request
-    post = Post.objects.get(slug=slug)
+class CommentLikeAPIToggle(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
-    # to filter based on category
-    category = post.category
-    # the category in the models is = to the category value above, and we exclude the current article
-    related_articles = Post.objects.filter(category=category).exclude(id=post.id).order_by('-date')[:5]
-    if related_articles.count() < 5:
-        show_all = False
-    else:
-        show_all = True
+    def get(self, request, pk=None, format=None):
+        comment = get_object_or_404(Comment, pk=pk)
+        user = self.request.user
+        updated = False
+        liked = False
+        if user.is_authenticated:
+            if user in comment.likes.all():
+                liked = False
+                comment.likes.remove(user)
+            else:
+                liked = True
+                comment.likes.add(user)
+            updated = True
+            counts = comment.likes.count()
+            count_str = "likes" if counts != 1 else "like"  # define count_str variable
+        data = {
+            'updated': updated,
+            'liked': liked,
+            'likes_count': counts,
+            'count_str': count_str
+        }
+        return Response(data)
 
-    context = {
-                'user_authenticated': user_authenticated,
-                'post': post,
-                'related_articles': related_articles,
-                'show_all': show_all,
-               }
-    return render(request, 'article/read.html', context=context)'''
 
 def detail(request, slug):
     user_authenticated = request.user.is_authenticated

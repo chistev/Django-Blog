@@ -152,7 +152,23 @@
                         </div>
                         <div class="comment-footer">
                           <!-- <button class="comment-button"><i class="fa-solid fa-comment"></i>Reply</button> -->
-                          <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+                          
+                          <button class="like-button" 
+                          data-href="{% url 'article:comment-like-api' pk=comment.id %}" 
+                          data-comment-id="{{ comment.id }}">
+                            {% if user.is_authenticated %}
+                                {% if user in comment.likes.all %}
+                                    <i class="fas fa-heart liked like-icon"></i>
+                                    <span class="like-count like-icon" style="color: salmon;">{{ comment.likes.count }}</span>
+                                {% else %}
+                                    <i class="fas fa-heart like-icon"></i>
+                                    <span class="like-count" style="color: white;">{{ comment.likes.count }}</span>
+                                {% endif %}
+                            {% else %}
+                                <i class="fas fa-heart like-icon"></i>
+                            {% endif %}
+                        </button>
+                        
                           <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
                         </div>
                         <hr>

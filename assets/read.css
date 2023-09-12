@@ -117,6 +117,10 @@ color: salmon;
 
   /* Comments */
 
+  .like-button:hover .like-icon {
+    color: salmon !important;
+}
+
   
 .header{
     display: flex;
@@ -166,6 +170,8 @@ h2{
   #load-more-button {
     margin-top: 10px;
   }
+
+
 
 /* Related Articles */
 

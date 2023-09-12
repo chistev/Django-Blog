@@ -1,54 +1,5 @@
-// Like and unlike functionality
-
-// Generate the initial count string on page load
-/* $('.like-count').each(function() {
-  var count = parseInt($(this).text());
-  var count_str = count === 1 ? '1 like' : count + ' likes';
-  $(this).text(count_str);
-});
-
-// Update the count string when the like buttons are clicked
-$('.like-button').click(function(e) {
-  e.preventDefault();
-  var this_ = $(this);
-  var likeURL = this_.attr('data-href');
-  var postSlug = this_.attr('data-post-slug'); // Get the post ID
-
-  if (likeURL) {
-    $.ajax({
-      url: likeURL,
-      method: 'GET',
-      data: {},
-      success: function(data) {
-        console.log(data);
-        var count = data.likes_count;
-        var count_str = data.count_str;
-
-        // Update the like count and style for the clicked button
-        var clickedButton = $('.like-button[data-post-slug="' + postSlug + '"]');
-        var like_icon = clickedButton.find('.article-like-style');
-        var like_count = clickedButton.find('.like-count');
-
-        if (data.liked) {
-          like_icon.css('color', 'salmon');
-          like_count.text(count + ' ' + count_str);
-          like_count.css('color', 'salmon');
-        } else {
-          like_icon.css('color', 'white');
-          like_count.text(count + ' ' + count_str);
-          like_count.css('color', '');
-        }
-      },
-      error: function(error) {
-        console.error(error);
-        console.error('error');
-      }
-    });
-  }
-});
- */
-
-// Function to update like counts and pluralization
+/* LIKE AND UNLIKE FUNCTIONALITY FOR POSTS
+Function to update like counts and pluralization for posts */
 function updateLikeCounts() {
   document.querySelectorAll('.like-count').forEach(function (likeCount) {
     var count = parseInt(likeCount.textContent);
@@ -108,6 +59,85 @@ document.querySelectorAll('[data-post-slug]').forEach(function (likeButton) {
         .catch(function (error) {
           console.error(error);
           console.error('error');
+        });
+    }
+  });
+});
+
+/* LIKE AND UNLIKE FUNCTIONALITY FOR COMMENTS
+Function to update comment like counts and pluralization */
+function updateCommentLikeCounts() {
+  console.log('Updating comment like counts and pluralization...');
+  document.querySelectorAll('.like-count').forEach(function (likeCount) {
+    var count = parseInt(likeCount.textContent);
+    var count_str = count === 1 ? 'like' : 'likes';
+    likeCount.textContent = count + ' ' + count_str;
+  });
+}
+
+// Function to update comment like button UI
+function updateCommentLikeButtonUI(commentId, data) {
+  console.log('Updating comment like button UI...');
+
+  // Select the comment like button
+  var likeButton = document.querySelector(`[data-comment-id="${commentId}"]`);
+  if (!likeButton) {
+    console.error('Comment like button not found for comment ID:', commentId);
+    return;
+  }
+
+  // Update comment like button UI
+  var like_icon = likeButton.querySelector('.fas.fa-heart');
+  var like_count = likeButton.querySelector('.like-count');
+
+  if (like_icon && like_count) {
+    if (data.liked) {
+      like_icon.style.color = 'salmon';
+      like_count.textContent = data.likes_count + ' ' + data.count_str;
+      like_count.style.color = 'salmon';
+    } else {
+      like_icon.style.color = 'white'; // Change to your desired color
+      like_count.textContent = data.likes_count + ' ' + data.count_str;
+      like_count.style.color = ''; // Remove color style if not needed
+    }
+  } else {
+    console.error('Comment like button UI elements not found for comment ID:', commentId);
+  }
+}
+
+// Update comment like counts and pluralization on page load
+updateCommentLikeCounts();
+
+// Update the count string when the comment like buttons are clicked
+document.querySelectorAll('[data-comment-id]').forEach(function (likeButton) {
+  likeButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    var likeURL = likeButton.getAttribute('data-href');
+    var commentId = likeButton.getAttribute('data-comment-id');
+
+    if (likeURL) {
+      console.log('Click event triggered for comment like button with comment ID:', commentId);
+
+      fetch(likeURL, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest', // Include this header for Django to detect AJAX requests
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          console.log('Response from comment like API:', data);
+
+          // Update comment like button UI
+          updateCommentLikeButtonUI(commentId, data);
+
+          // Update comment like counts on the page
+          updateCommentLikeCounts();
+        })
+        .catch(function (error) {
+          console.error('Error:', error);
         });
     }
   });

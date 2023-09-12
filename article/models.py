@@ -56,6 +56,10 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name="comment_likes", blank=True)
+
+    def get_api_like_url(self):
+        return reverse('article:comment-like-api', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f"{self.user}'s comment"
