@@ -71,18 +71,16 @@
                             </div>
                             <div style="display: flex;">
                               {% if user.is_superuser %}
-                              <form method="POST" action="{% url 'article:delete_post' post.slug %}">
+                              <form id="delete-post-form" method="POST" action="{% url 'article:delete_post' post.slug %}">
                                 {% csrf_token %}
                                 <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fa-solid fa-trash"></i>Delete</button>
-                                
-                              </form>
+                            </form>
+                            
                               <button id="edit-button" class="edit-button">
                                 <a style="color: white; text-decoration: none;" href="{% url 'article:edit_post' slug=post.slug %}">
                                   <i class="fa-solid fa-pen-to-square"></i>Edit
                                 </a>
                                 </button>
-                                
-                                
                               {% endif %}
                                 
                         

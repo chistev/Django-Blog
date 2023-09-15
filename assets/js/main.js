@@ -146,7 +146,7 @@ document.querySelectorAll('[data-comment-id]').forEach(function (likeButton) {
 
 // delete post functionality
 
-$(document).ready(function(){
+/* $(document).ready(function(){
   $('#delete-post-form').submit(function(event){
       event.preventDefault()
       
@@ -164,6 +164,40 @@ $(document).ready(function(){
       })
   })
 })
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+  var deleteForm = document.getElementById("delete-post-form");
+
+  if (deleteForm) {
+      deleteForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var formData = new FormData(deleteForm);
+          var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+          fetch(deleteForm.getAttribute("action"), {
+              method: "POST",
+              body: formData,
+              headers: {
+                  "X-CSRFToken": csrfToken,
+              },
+          })
+              .then(function (response) {
+                  if (response.ok) {
+                      // Redirect to the desired page upon successful delete
+                      window.location.href = "/";
+                  } else {
+                      // Handle the error response here
+                      console.error("Error deleting post");
+                  }
+              })
+              .catch(function (error) {
+                  console.error("Fetch error: " + error);
+              });
+      });
+  }
+});
 
 // Adding comment functionality
 
