@@ -1,3 +1,19 @@
+// Function to get CSRF token from cookies
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 /* LIKE AND UNLIKE FUNCTIONALITY FOR POSTS
 Function to update like counts and pluralization for posts */
 function updateLikeCounts() {
@@ -146,26 +162,6 @@ document.querySelectorAll('[data-comment-id]').forEach(function (likeButton) {
 
 // delete post functionality
 
-/* $(document).ready(function(){
-  $('#delete-post-form').submit(function(event){
-      event.preventDefault()
-      
-      var formData = $(this).serialize()
-      $.ajax({
-          url: $(this).attr('action'),
-          type: 'POST',
-          data: formData,
-          headers: {
-              'X-CSRFToken': '{{ csrf_token }}'
-          },
-          success: function(){
-              window.location.href = '/'
-          }
-      })
-  })
-})
- */
-
 document.addEventListener("DOMContentLoaded", function () {
   var deleteForm = document.getElementById("delete-post-form");
 
@@ -197,6 +193,61 @@ document.addEventListener("DOMContentLoaded", function () {
               });
       });
   }
+});
+
+// Delete comments functionality
+
+document.addEventListener("DOMContentLoaded", function () {
+  const deleteButtons = document.querySelectorAll(".delete-comment-button");
+
+  deleteButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const commentId = button.getAttribute("data-comment-id");
+      const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+
+      if (confirm("Are you sure you want to delete this comment?")) {
+        // Print the delete URL to the console for debugging
+        console.log(`Delete URL: /api/comments/${commentId}/delete/`);
+
+        // Print the CSRF token to the console for debugging
+        console.log("CSRF Token:", getCookie("csrftoken"));
+
+        // Send a DELETE request to your API to delete the comment
+        fetch(`/api/comments/${commentId}/delete/`, {
+          method: "DELETE",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"), // Get the CSRF token from cookies
+            "Content-Type": "application/json", // Set the content type
+          },
+        })
+          .then(function (response) {
+            if (response.ok) {
+              // Parse the JSON response
+              return response.json();
+            } else {
+              console.error("Error deleting comment");
+              throw new Error("Failed to delete comment");
+            }
+          })
+          .then(function (data) {
+            // Check if the response contains a deleted_comment_id
+            if (data.deleted_comment_id) {
+              // Remove the comment element from the DOM if the deletion was successful
+              if (commentElement) {
+                commentElement.remove();
+              } else {
+                console.error("Comment element not found in DOM");
+              }
+            } else {
+              console.error("No deleted_comment_id in response");
+            }
+          })
+          .catch(function (error) {
+            console.error("Fetch error: " + error);
+          });
+      }
+    });
+  });
 });
 
 // Adding comment functionality
@@ -347,19 +398,5 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // Function to get CSRF token from cookies
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      var cookies = document.cookie.split(";");
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
+  
 });

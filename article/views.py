@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from requests import post
 
 from .models import Post, Category, Comment
@@ -127,6 +127,7 @@ def detail(request, slug):
 
     return render(request, 'article/read.html', context=context)
 
+
 def load_more_comments(request, slug, offset):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.order_by('-date_posted')
@@ -149,8 +150,8 @@ def load_more_comments(request, slug, offset):
 
     return JsonResponse(data, safe=False)
 
+
 @login_required
-# deleting posts
 def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if not request.user.is_superuser:
@@ -159,6 +160,25 @@ def delete_post(request, slug):
     if request.method == 'POST':
         post.delete()
     return redirect('article:index')
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    # Check if the current user is the author of the comment
+    if comment.user != request.user:
+        return JsonResponse({'error': 'You are not allowed to delete this comment.'}, status=403)
+
+    # Store the comment ID for reference in the JSON response
+    deleted_comment_id = comment.id
+
+    comment.delete()
+
+    # Include the deleted comment ID in the response
+    return JsonResponse({'message': 'Comment deleted successfully', 'deleted_comment_id': deleted_comment_id})
+
 
 
 def edit_post(request, slug):
@@ -256,3 +276,5 @@ def get_comments(request, slug):
         comment_list.append(comment_data)
 
     return JsonResponse(comment_list, safe=False)
+
+
