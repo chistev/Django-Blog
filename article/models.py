@@ -57,6 +57,8 @@ class Comment(models.Model):
     comment = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name="comment_likes", blank=True)
+    edited_comment = models.TextField(blank=True, null=True)
+    is_edited = models.BooleanField(default=False)
 
     def get_api_like_url(self):
         return reverse('article:comment-like-api', kwargs={'pk': self.pk})

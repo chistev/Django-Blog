@@ -180,7 +180,6 @@ def delete_comment(request, comment_id):
     return JsonResponse({'message': 'Comment deleted successfully', 'deleted_comment_id': deleted_comment_id})
 
 
-
 def edit_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     # Check if the current user is the author of the article
@@ -212,6 +211,39 @@ def save_post(request, slug):
 
         # Redirect to the article details page or any other page
         return redirect('article:detail', slug=post.slug)
+
+
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Check if the current user is the author of the comment
+    if comment.user != request.user:
+        return HttpResponse("You are not allowed to edit this comment.")
+
+    return render(request, 'article/edit_comment.html', {'comment': comment})
+
+
+def save_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    # Check if the current user is the author of the comment
+    if comment.user != request.user:
+        return HttpResponse("You are not allowed to edit this comment.")
+
+    if request.method == 'POST':
+        new_content = request.POST.get('new_content')
+
+        # Update the comment content
+        comment.comment = new_content
+
+        # Set the edited flag
+        comment.is_edited = True
+
+        # Save the changes
+        comment.save()
+
+        # Redirect to the post detail page or any other appropriate page
+        return redirect('article:detail', slug=comment.post.slug)
 
 
 def search_results(request):

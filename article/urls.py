@@ -18,6 +18,11 @@ urlpatterns = [
     path('comments/<str:slug>/', views.get_comments, name='get_comments'),
     path('load_more_comments/<slug:slug>/<int:offset>/', views.load_more_comments, name='load_more_comments'),
     path('comment/<int:pk>/like/', views.CommentLikeAPIToggle.as_view(), name='comment-like-api'),
+
+    path('comment/edit/<int:comment_id>/', views.edit_comment, name='edit_comment'),
+    path('article/save_comment/<int:comment_id>/', views.save_comment, name='save_comment'),
+
+
 ]
 
 
