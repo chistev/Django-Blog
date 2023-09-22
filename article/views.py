@@ -1,4 +1,9 @@
-from django.contrib.auth.decorators import login_required
+import os
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, get_list_or_404
@@ -6,13 +11,14 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST, require_http_methods
 from requests import post
 
+from .forms import PostForm
 from .models import Post, Category, Comment
 from django.shortcuts import render, redirect
 
 from django.db.models import Q
 
 
-from django.views.generic import ListView, RedirectView
+from django.views.generic import ListView, RedirectView, CreateView
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -310,3 +316,46 @@ def get_comments(request, slug):
     return JsonResponse(comment_list, safe=False)
 
 
+def is_superuser(user):
+    return user.is_superuser
+
+
+class CreatePost(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'article/create_post.html'
+
+    def form_valid(self, form):
+        # Set the user field to the current logged-in user
+        form.instance.user = self.request.user
+
+        # Check if an image was uploaded
+        if 'image' in self.request.FILES:
+            uploaded_image = self.request.FILES['image']
+
+            # Define the path where the image should be saved in MEDIA_ROOT
+            image_path = os.path.join(uploaded_image.name)
+
+            # Save the uploaded image to the defined path
+            with open(os.path.join(settings.MEDIA_ROOT, image_path), 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
+
+            # Set the image field to the relative path of the saved image
+            form.instance.image = image_path
+
+        else:
+            # Handle the case where no image was uploaded (optional)
+            messages.warning(self.request, 'No image uploaded.')
+
+        # Continue with the form validation
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect to the detail page of the newly created post
+        return reverse('article:detail', kwargs={'slug': self.object.slug})
+
+    @classmethod
+    def as_view(cls, **kwargs):
+        view = super(CreatePost, cls).as_view(**kwargs)
+        return login_required(user_passes_test(lambda u: u.is_superuser)(view))

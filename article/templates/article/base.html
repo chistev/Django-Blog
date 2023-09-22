@@ -27,7 +27,13 @@
                 <li id="navbar-user">
                     {% if user.is_authenticated %}
                     <i class="fa-solid fa-user"></i><span>Hi {{user}}</span>
+
                 </li>
+                {% if user.is_superuser %}
+                       <li>
+                           <a href="{% url 'article:create_post' %}" class="create-post-button">Create Post</a>
+                       </li>
+                    {% endif %}
                 <li class="logout"><a href ="{% url 'account:logout' %}">LOG OUT</a></li>
 
                 {% else %}

@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
-from .views import PostListView, PostLikeAPIToggle
+from .views import PostListView, PostLikeAPIToggle, CreatePost
 
 app_name = 'article'
 
 urlpatterns = [
     path('', PostListView.as_view(), name='index'),
+    path('create_post/', CreatePost.as_view(), name='create_post'),
     path('<slug>/', views.detail, name='detail'),
     path('api/<slug>/like/', PostLikeAPIToggle.as_view(), name='like-api'),
     path('article/search/', views.search_results, name='search_results'),
@@ -21,6 +22,8 @@ urlpatterns = [
 
     path('comment/edit/<int:comment_id>/', views.edit_comment, name='edit_comment'),
     path('article/save_comment/<int:comment_id>/', views.save_comment, name='save_comment'),
+
+
 
 
 ]
