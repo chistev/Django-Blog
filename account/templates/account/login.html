@@ -21,7 +21,7 @@
       <button type="submit">Login</button>
     </form>
       <div class="register">
-            <p>forgot password? <a href="">Recover</a></p>
+            <p>forgot password? <a href="{% url 'account:password_reset' %}">Recover</a></p>
             <p>Don't have an account? <a href="{% url 'account:register' %}">Register</a></p>
           </div>
 </div>

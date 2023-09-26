@@ -58,3 +58,9 @@ form {
   button[type="submit"]:hover {
     background-color: #45a049;
   }
+
+form .error-message {
+    color: red !important;
+    font-size: 14px; /* Adjust the font size as needed */
+    margin-top: 5px; /* Add spacing if necessary */
+}

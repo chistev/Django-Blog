@@ -10,7 +10,9 @@ def login_excluded(redirect_to):
     def _method_wrapper(view_method):
         def _arguments_wrapper(request, *args, **kwargs):
             if request.user.is_authenticated:
+                # If the user is authenticated, redirect them to the specified URL
                 return redirect(redirect_to)
+            # If the user is not authenticated, proceed with the view
             return view_method(request, *args, **kwargs)
         return _arguments_wrapper
     return _method_wrapper
@@ -44,6 +46,10 @@ def register_view(request):
             user = form.save()
             login(request, user)
             return redirect('article:index')
+        else:
+            # Check if the error is related to the username field
+            if 'username' in form.errors:
+                form.add_error('username', 'Username must be at least 5 characters long and should be unique.')
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/register.html', {'form': form})
