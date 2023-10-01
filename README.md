@@ -1,14 +1,19 @@
 This is a blog built with the Django Framework. 
 
+for the markdown you need to install cdeditor. You can do this by going to your project root directory and then in the terminal -
+
+> pip install django-ckeditor
+
 in the settings.py, add
     
     'article',
     'account',
     'rest_framework'
+    'ckeditor'
 
     to installed apps.
 
-Also, add
+Also, add in your settings.py
 
     STATIC_URL = 'static/'
 

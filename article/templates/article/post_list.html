@@ -26,7 +26,7 @@
                     <h2><a href="{% url 'article:detail' slug=post.slug %}">{{post.title}}</a></h2>
                     <span id="category"><a href="{% url 'article:category' post.category %}">{{post.category}}</a></span>
                 </div>
-              <p>{{post.snippet}}</p>
+              <p>{{post.snippet |safe }}</p>
               <div class="card-meta">
                 <span class="timestamp">{{post.date}}</span>
                 {% if user.is_authenticated %}

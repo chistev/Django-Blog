@@ -22,13 +22,4 @@ urlpatterns = [
 
     path('comment/edit/<int:comment_id>/', views.edit_comment, name='edit_comment'),
     path('article/save_comment/<int:comment_id>/', views.save_comment, name='save_comment'),
-
-
-
-
 ]
-
-
-
-
-
