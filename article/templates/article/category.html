@@ -2,32 +2,26 @@
 
 {% load static %}
 
-{% block title %} {{post.title}} {% endblock %}
-
+{% block title %}{{ category.title }}{% endblock %}
 
 {% block css %}
-        {{ block.super }}
-    <link rel="stylesheet" href="{% static 'search_results.css' %}">
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'category.css' %}">
 {% endblock %}
 
 {% block body %}
+<div class="category-page">
+    <h1 class="category-title">{{ category.title }}</h1>
 
-<h1>Results</h1>
-
-
-{% if posts %}
-<ul class="search-results">
-    {% for post in posts %}
-    <li>
-        <h2><a href="{% url 'article:detail' slug=post.slug %}">{{ post.title }}</a></h2>
-        <hr>
-        <p>{{ post.post|truncatewords:50 }}</p>
-        <hr>
-    </li>   
-    {% endfor %}
-</ul>
-{% else %}
-    <p>No such article exists.</p>
-{% endif %}
-
+    <div class="category-articles">
+        {% for post in posts %}
+        <div class="article">
+            <h2 class="article-title"><a href="{% url 'article:detail' slug=post.slug %}">{{ post.title }}</a></h2>
+            <p class="article-excerpt">{{ post.post|safe|truncatewords:50 }}</p>
+        </div>
+        {% empty %}
+        <p class="no-articles">No articles in this category.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
