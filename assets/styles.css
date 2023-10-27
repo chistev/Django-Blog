@@ -142,6 +142,7 @@ button[type=submit]:hover {
   max-width: 1250px;
   margin: 0 auto;
   gap: 20px; /* Add gap between cards */
+  
 }
 
  /* .card {
@@ -164,6 +165,7 @@ button[type=submit]:hover {
   word-wrap: break-word;
   display: flex; /* Make cards flex containers */
   flex-direction: column; /* Stack card content vertically */
+  color: white;
 }
 
 .card:hover {
@@ -352,7 +354,7 @@ color: salmon;
 }
 
 .twitter-button {
-  background-color: #1DA1F2;
+  background-color: black;
   color: white;
   border: none;
   padding: 10px 20px 10px 40px;
@@ -364,7 +366,7 @@ color: salmon;
 }
 
 .twitter-button:hover {
-  background-color: #0B8BB3;
+  background-color: rgb(24, 2, 2);
   cursor: pointer;
 }
 
