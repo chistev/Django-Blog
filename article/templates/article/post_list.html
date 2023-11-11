@@ -44,7 +44,7 @@
                   <button id="comment-button" class="comment-button"><a 
                     href="{% url 'article:detail' slug=post.slug %}?comment=true#comment-textarea" 
                     style="text-decoration: none;" class="comment-button">
-                    <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                    <i id="comment-icon" class="fa-solid fa-comment"></i> {{post.comments.count}} comment{{ post.comments.count|pluralize }}
                   </a>
                     </button>
                 {% else %}
@@ -56,7 +56,7 @@
                   </button>
                   <button id="comment-button" class="comment-button"><a 
                     href="{% url 'article:detail' slug=post.slug %}#sort" style="text-decoration: none;" class="comment-button">
-                    <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                    <i id="comment-icon" class="fa-solid fa-comment"></i>{{post.comments.count}} comment{{ post.comments.count|pluralize }}
                   </a>
                     </button>
                 {% endif %}

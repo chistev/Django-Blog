@@ -52,7 +52,7 @@
                                  <button id="comment-button" class="comment-button"><a 
                                   href="{% url 'article:detail' slug=post.slug %}?comment=true#comment-textarea" 
                                   style="text-decoration: none;" class="comment-button">
-                                  <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                                  <i id="comment-icon" class="fa-solid fa-comment"></i>{{post.comments.count}} comment{{ post.comments.count|pluralize }}
                                 </a>
                                   </button>
                               {% else %}
@@ -62,7 +62,7 @@
 
                                 <button id="comment-button" class="comment-button"><a 
                                   href="{% url 'article:detail' slug=post.slug %}#sort" style="text-decoration: none;" class="comment-button">
-                                  <i id="comment-icon" class="fa-solid fa-comment"></i>5 comments
+                                  <i id="comment-icon" class="fa-solid fa-comment"></i>{{post.comments.count}} comment{{ post.comments.count|pluralize }}
                                 </a>
                                   </button>
                               {% endif %}
@@ -102,8 +102,16 @@
                                     <span class="like-count">{{ post.likes.count }} {{ count_str }}</span>
                                   </button>
                                  {% endif %}
-                        {% endif %}
-                        <button class="comment-button"><i class="fa-solid fa-comment"></i>Leave a comment</button>
+                                 <button class="comment-button"><i class="fa-solid fa-comment"></i>Leave a comment</button>
+                        {% else %}
+                        <button class="comment-button">
+                          <a href="{% url 'account:login' %}" style="text-decoration: none; color: white;">
+                          <i class="fa-solid fa-comment"></i>Log in to leave a comment
+                        </a>
+                      </button>
+
+                      {% endif %}
+                        
                       </div>
                     </div>
                 </div>
