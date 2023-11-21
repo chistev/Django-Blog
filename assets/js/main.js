@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Adding comment functionality
 
-document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
   var batch_size = 10; // Set the batch size here
   var totalComments = 0;
   var displayedComments = 0;
@@ -398,5 +398,138 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  
+
+});
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+  var batch_size = 10;
+  var totalComments = 0;
+  var displayedComments = 0;
+
+  function loadMoreComments() {
+    var offset = displayedComments;
+    var slug = document.getElementById("comment-form").getAttribute("data-slug");
+    var loadMoreURL = `/load_more_comments/${slug}/${offset}/`;
+
+    fetch(loadMoreURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.length > 0) {
+          data.forEach((commentData) => {
+            renderComment(commentData);
+          });
+          displayedComments += data.length;
+          if (displayedComments >= totalComments) {
+            document.getElementById("load-more-button").style.display = "none";
+          }
+        } else {
+          document.getElementById("load-more-button").style.display = "none";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  displayedComments = batch_size;
+  console.log("Total comments:", totalComments);
+  console.log("Batch size:", batch_size);
+
+  function renderComment(commentData) {
+    var commentHtml = `
+      <div class="comment">
+        <div class="comment-header">
+          <h3>${commentData.user}</h3>
+          <span class="timestamp">${commentData.date_posted}</span>
+        </div>
+        <div class="comment-body">
+          <p>${commentData.comment}</p>
+        </div>
+        <div class="comment-footer">
+          <button class="like-button"><i class="fas fa-heart"></i>Like</button>
+
+          <button class="like-button"><i class="fa-solid fa-trash"></i>Delete</button>
+        </div>
+        <hr>
+        <div class="child-comments">
+          <!-- Child comments go here (if any) -->
+        </div>
+      </div>`;
+
+    document
+      .getElementById("comments-section")
+      .insertAdjacentHTML("afterbegin", commentHtml);
+  }
+
+  function fetchAndRenderComments() {
+    var slug = document.getElementById("comment-form").getAttribute("data-slug");
+    var commentListURL = `/comments/${slug}/`;
+
+    fetch(commentListURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Fetched comments:", data);
+        totalComments = data.length;
+        console.log("Total comments:", totalComments);
+        if (totalComments <= displayedComments) {
+          document.getElementById("load-more-button").style.display = "none";
+        } else {
+          document.getElementById("load-more-button").style.display = "block";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  fetchAndRenderComments();
+
+  document.getElementById("load-more-button").addEventListener("click", function () {
+    loadMoreComments();
+  });
+
+  document.getElementById("comment-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var commentText = document.getElementById("comment-textarea").value.trim();
+    if (commentText !== "") {
+      var formData = new FormData(this);
+      var slug = this.getAttribute("data-slug");
+      var commentSubmitURL = `/comment_submit/${slug}/`;
+
+      fetch(commentSubmitURL, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          document.getElementById("comment-textarea").value = "";
+          renderComment(data);
+          displayedComments += 1;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  });
+
 });
